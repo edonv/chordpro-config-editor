@@ -13,7 +13,9 @@
 <body>
     <script src="https://cdn.jsdelivr.net/npm/jedison@latest/dist/umd/jedison.umd.js"></script>
 
-    <div id="jedison-container"></div>
+    <div id="jedison-container">
+        <h1 id="schema-error" style="display: none;">Could not load ChordPro schema.</h1>
+    </div>
 
     <script>
         /**
@@ -37,11 +39,19 @@
             return chordProSchema;
         }
 
-        const jedison = new Jedison.Create({
-            container: document.querySelector('#jedison-container'),
-            theme: new Jedison.Theme(),
-            schema: await getChordProSchema(),
-        });
+        const chordProSchema = await getChordProSchema();
+        const schemaErrorText = document.getElementById('schema-error');
+
+        if (chordProSchema) {
+            schemaErrorText.remove();
+            const jedison = new Jedison.Create({
+                container: document.querySelector('#jedison-container'),
+                theme: new Jedison.Theme(),
+                schema: chordProSchema,
+            });
+        } else {
+            schemaErrorText.style.display = 'initial'
+        }
     </script>
 
 </body>
