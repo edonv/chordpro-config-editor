@@ -16,25 +16,32 @@
     <div id="jedison-container"></div>
 
     <script>
+        /**
+         * @returns {Promise<string | undefined>}
+         */
+        async function getChordProSchema() {
+            const schemaStoreResp = await fetch('https://www.schemastore.org/api/json/catalog.json');
+            const schemaStoreJSON = await schemaStoreResp.json();
+
+            const chordProSchemaInfo = schemaStoreJSON.schemas.find(schema => schema.name.toLowerCase().includes('chordpro'));
+            const chordProSchemaURL = chordProSchemaInfo?.url;
+
+            if (!chordProSchemaURL) {
+                return;
+            }
+
+            const chordProSchemaResp = await fetch(chordProSchemaURL);
+            const chordProSchema = await chordProSchemaResp.json();
+
+            // console.log(chordProSchema);
+            return chordProSchema;
+        }
+
         const jedison = new Jedison.Create({
             container: document.querySelector('#jedison-container'),
             theme: new Jedison.Theme(),
-            schema: {
-                "title": "Person",
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "The person's  name."
-                    },
-                    "age": {
-                        "description": "Age in years which must be equal to or greater than zero.",
-                        "type": "integer",
-                        "minimum": 0
-                    }
-                }
-            }
-        })
+            schema: await getChordProSchema(),
+        });
     </script>
 
 </body>
