@@ -39,19 +39,23 @@
             return chordProSchema;
         }
 
-        const chordProSchema = await getChordProSchema();
-        const schemaErrorText = document.getElementById('schema-error');
+        getChordProSchema()
+            .then(chordProSchema => {
+                const schemaErrorText = document.getElementById('schema-error');
 
-        if (chordProSchema) {
-            schemaErrorText.remove();
-            const jedison = new Jedison.Create({
-                container: document.querySelector('#jedison-container'),
-                theme: new Jedison.Theme(),
-                schema: chordProSchema,
+                if (chordProSchema) {
+                    console.log('remove error message')
+                    schemaErrorText.remove();
+                    const jedison = new Jedison.Create({
+                        container: document.querySelector('#jedison-container'),
+                        theme: new Jedison.Theme(),
+                        schema: chordProSchema,
+                    });
+                } else {
+                    console.log('unhide error message')
+                    schemaErrorText.style.display = 'initial';
+                }
             });
-        } else {
-            schemaErrorText.style.display = 'initial'
-        }
     </script>
 
 </body>
